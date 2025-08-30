@@ -236,7 +236,7 @@ class SuperMarket:
                             print(price)
                             
                         else:
-                            price = product.find_element(by=By.XPATH, value='.//div[@class="prices-buy"]//div[@class="prices"]//p[@class="price"]')
+                            price = product.find_element(by=By.XPATH, value='.//div[@class="prices-buy"]//div[@class="prices"]//p[@class="price mt-1"]')
                             price = price.text
                             print(price)
 
@@ -256,7 +256,7 @@ class SuperMarket:
                     # Fecha o modal de boas vindas
                     # self.driver.find_element(by=By.XPATH, value='//div[@class="modal__close__welcome"]').click()
                     # WebDriverWait(self.driver, 10, .1).until(EC.element_to_be_clickable((By.XPATH, '//div[@class="modal__close__welcome"]'))).click()
-                    WebDriverWait(self.driver, 10, .1).until(EC.element_to_be_clickable((By.XPATH, '//p[contains(text(), "Sorocaba")]'))).click()
+                    WebDriverWait(self.driver, 10, .1).until(EC.element_to_be_clickable((By.XPATH, '(//p[contains(text(), "Sorocaba")])[2]'))).click()
 
                     # Realiza a busca dos produtos
                     for product in self.products:
@@ -279,7 +279,7 @@ class SuperMarket:
                         contains_txt = self.set_contains(product)
                         # time.sleep(3)
                         # products_list = self.driver.find_element(by=By.XPATH, value='//div[@class="product-list product-list-fill-space"]')
-                        products_list = WebDriverWait(self.driver, 10, .1).until(EC.presence_of_element_located((By.XPATH, '//div[@class="product-list product-list-fill-space"]')))
+                        products_list = WebDriverWait(self.driver, 10, .1).until(EC.presence_of_element_located((By.XPATH, '//div[@class="css-12dmjen e1k4it830"]')))
                         # products_rows = products_list.find_elements(by=By.XPATH, value=f'.//a[{contains_txt}]')
                         products_rows = WebDriverWait(products_list, 10, .1).until(EC.presence_of_all_elements_located((By.XPATH, f'.//a[{contains_txt}]')))
 
@@ -292,10 +292,12 @@ class SuperMarket:
                         
                         # Extrai o nome e o preço do produto
                         # name = product.find_element(by=By.XPATH, value='.//article//div//h3')
-                        name = WebDriverWait(product, 10, .1).until(EC.presence_of_element_located((By.XPATH, './/article//div//h3')))
+                        # name = WebDriverWait(product, 10, .1).until(EC.presence_of_element_located((By.XPATH, './/article//div//h3')))
+                        name = WebDriverWait(product, 10, .1).until(EC.presence_of_element_located((By.XPATH, './/p[@class="chakra-text css-1q1xfo8 e1k4it830"]')))
                         print(name.text)
                         # price = product.find_element(by=By.XPATH, value='.//span[@class="product-shelf__price-current"]').text
-                        price = WebDriverWait(product, 10, .1).until(EC.presence_of_element_located((By.XPATH, './/span[@class="product-shelf__price-current"]'))).text
+                        # price = WebDriverWait(product, 10, .1).until(EC.presence_of_element_located((By.XPATH, './/span[@class="product-shelf__price-current"]'))).text
+                        price = WebDriverWait(product, 10, .1).until(EC.presence_of_element_located((By.XPATH, './/p[@class="chakra-text css-1m5u5z8 e1k4it830"]'))).text
                         print(price)
 
                         # Adiciona o produto e o preço na respectiva lista
@@ -385,13 +387,15 @@ class SuperMarket:
                         # Realiza a busca do produto no site do supermercado
                         product_name = ('%20').join(product.split())
                         self.driver.get(f'{website}/{product_name}?_q={product_name}&map=ft&order=OrderByPriceASC')
+                        print(f'{website}/{product_name}?_q={product_name}&map=ft&order=OrderByPriceASC')
                         # time.sleep(3)
 
                         # Localiza os produtos na página
                         contains_txt = self.set_contains(product.replace(' de ', ' '))
+                        time.sleep(5)
                         # container = self.driver.find_element(by=By.XPATH, value='//div[contains(@class, "vtex-search-result-3-x-gallery vtex-search-result-3-x-gallery--grid flex flex-row flex-wrap items-stretch bn ph1 na4 pl9-l")]')
                         # products_rows = container.find_elements(by=By.XPATH, value=f'.//div[contains(@class, "vtex-search-result-3-x-galleryItem")][{contains_txt}][not(.//text()[contains(., "Indisponível")])]')
-                        container = WebDriverWait(self.driver, 10, .1).until(EC.presence_of_element_located((By.XPATH, '//div[contains(@class, "vtex-search-result-3-x-gallery vtex-search-result-3-x-gallery--grid flex flex-row flex-wrap items-stretch bn ph1 na4 pl9-l")]')))
+                        container = WebDriverWait(self.driver, 20, .1).until(EC.presence_of_element_located((By.XPATH, '//div[contains(@class, "vtex-search-result-3-x-gallery vtex-search-result-3-x-gallery--grid flex flex-row flex-wrap items-stretch bn ph1 na4 pl9-l")]')))
                         try:
                             products_rows = WebDriverWait(container, 20, .1).until(EC.presence_of_all_elements_located((By.XPATH, f'.//div[contains(@class, "vtex-search-result-3-x-galleryItem")][{contains_txt}][not(.//text()[contains(., "Indisponível")])]')))
                         except:
@@ -442,7 +446,8 @@ class SuperMarket:
 
                     # Define o CEP do endereço de entrega
                     WebDriverWait(self.driver, 10, .1).until(EC.presence_of_element_located((By.XPATH, '//input[contains(@name, "searchbarComponent")]'))).click()
-                    WebDriverWait(self.driver, 10, 1).until(EC.presence_of_element_located((By.NAME, 'zipCode'))).send_keys(CEP)
+                    time.sleep(4)
+                    WebDriverWait(self.driver, 20, .1).until(EC.presence_of_element_located((By.NAME, 'zipCode'))).send_keys(CEP)
                     WebDriverWait(self.driver, 10, .1).until(EC.element_to_be_clickable((By.XPATH, '//span[contains(text(), "Clique & Retire")]'))).click()
                     WebDriverWait(self.driver, 10, .1).until(EC.element_to_be_clickable((By.XPATH, '//span[contains(text(), "Sorocaba")]'))).click()
 
@@ -463,7 +468,6 @@ class SuperMarket:
 
                         # Localiza os produtos na página
                         contains_txt = self.set_contains(product)
-                        ows = container_products.find_elements(by=By.XPATH, value=f'.//div[contains(@class, "ProductCardShowcase")][{contains_txt}]')
                         container_products = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, '//section[contains(@class, "MosaicCardContainer grid_view")]')))
                         products_rows = WebDriverWait(container_products, 20).until(EC.presence_of_all_elements_located((By.XPATH, f'.//div[contains(@class, "ProductCardShowcase")][{contains_txt}]')))               
 
@@ -505,41 +509,40 @@ class SuperMarket:
                         
                         # Realiza a busca do produto no site do supermercado
                         product_name = '+'.join(product.split())
-                        self.driver.get(f'{website}/s/?q={product_name}&sort=price_asc&page=0')
+                        self.driver.get(f'{website}s/?q={product_name}&sort=price_asc&page=0')
                         time.sleep(5)
 
                          # Seleciona a cidade da loja
                         # select_element = self.driver.find_element(by=By.XPATH, value='//select[@id="sort-select"]')
+                        while len(self.driver.find_elements(by=By.XPATH, value='//a[@data-testid="show-more"]')) > 0:
+                            print("QTD:", len(self.driver.find_elements(by=By.XPATH, value='//a[@data-testid="show-more"]')))
+                            # button_pagination = self.driver.find_element(by=By.XPATH, value='//a[@data-testid="show-more"]')
+                            time.sleep(7)
+                            self.driver.execute_script("arguments[0].click();", WebDriverWait(self.driver, 20, .1).until(EC.element_to_be_clickable((By.XPATH, '//a[@data-testid="show-more"]'))))
+                            # button_pagination.click()
+                            #     # ActionChains(self.driver).move_to_element(button_pagination[0]).perform()
+                            #     # WebDriverWait(self.driver, 10, .1).until(EC.element_to_be_clickable((By.XPATH, '//div[contains(@class, "button-pagination")]'))).click()
+
                         select_element = WebDriverWait(self.driver, 10, .1).until(EC.presence_of_element_located((By.XPATH, '//select[@id="sort-select"]')))
                         select = Select(select_element)
                         select.select_by_value('price_asc')
                         time.sleep(5)
-
-                        # self.button_pagination = self.driver.find_elements(by=By.XPATH, value='//div[contains(@class, "button-pagination")]')
-                        try:
-                            button_pagination = WebDriverWait(self.driver, 20, .1).until(EC.presence_of_all_elements_located((By.XPATH, '//div[contains(@class, "button-pagination")]')))
-                            print('entrou')
-                            while button_pagination:
-                                # for button in range(2):
-                                # time.sleep(5)
-                                ActionChains(self.driver).move_to_element(button_pagination[0]).perform()
-                                # WebDriverWait(self.driver, 10, .1).until(EC.element_to_be_clickable((By.XPATH, '//div[contains(@class, "button-pagination")]'))).click()
-                                button_pagination[0].click()
-
-                        except Exception:
-                            pass
-
                         # if not self.driver.find_elements(by=By.XPATH, value='//div[contains(@class, "button-pagination")]'):
                         #     break
-                        print("saiu")
+
                         products_container = self.driver.find_element(by=By.XPATH, value='//ul[contains(@class, "product-grid")]')
-                        print(products_container)
+
+                        # print(products_container.get_attribute('innerHTML'))
+                        # print(products_container)
 
                         contains_txt = self.set_contains(product=product)
-                        print(contains_txt)
+                        # print(contains_txt)
                         # products_items = products_container.find_elements(by=By.XPATH, value=f'.//li[{contains_txt}]')
+                        # print(f'{website}/s/?q={product_name}&sort=price_asc&page=0')
+                        # print(f'//ul[contains(@class, "product-grid")]//li[{contains_txt}]')
+                        time.sleep(5)
                         products_items = products_container.find_elements(by=By.XPATH, value=f'.//li[{contains_txt}]')
-                        print(len(products_items))
+                        print(f"Quantidade: {len(products_items)}")
 
                          # Verifica se o produto foi encontrado na pagina
                         if not products_items:
@@ -547,13 +550,12 @@ class SuperMarket:
 
                          # Usa o primeiro produto encontrado correspondente ao mais barato
                         product = products_items[0]
-                        print(product)
 
                         # name = product.find_element(by=By.XPATH, value='.//div[contains(@class, "product-card-container")]//p[contains(@class, "product-card-name")]')
-                        name = WebDriverWait(product, 30, 1).until(EC.presence_of_element_located((By.XPATH, './/div[contains(@class, "product-card-container")]//p[contains(@class, "product-card-name")]'))).text
+                        name = WebDriverWait(product, 15, 1).until(EC.presence_of_element_located((By.XPATH, './/p[contains(@class, "product-card-name")]')))
                         print(name.text)
                         # price = product.find_element(by=By.XPATH, value='.//div[contains(@class, "product-card-container")]//p[contains(@class, "product-card-new-price")]').text
-                        price = WebDriverWait(product, 30, .1).until(EC.presence_of_element_located((By.XPATH, './/div[contains(@class, "product-card-container")]//p[contains(@class, "product-card-new-price")]'))).text
+                        price = WebDriverWait(product, 15, .1).until(EC.presence_of_element_located((By.XPATH, './/p[contains(@class, "product-card-new-price")]'))).text
                         print(price)
 
                         self.append_to_list(name, price, supermarket='BOA SUPERMERCADO')
